@@ -13,14 +13,14 @@ class ContinuousModel:
     def simulate(
             self,
             time: np.array = None,
-            input_signal: np.array = None
+            input_signal: np.array = None,
     ) -> Tuple[np.array]:
         if time is None:
             time = np.linspace(0, 10, 1000)
 
-        if input_signal == None:
+        if input_signal is None:
             input_signal = np.ones_like(time)
-        
+
         time, yout, _ = signal.lsim(
             self.system,
             input_signal,
@@ -30,5 +30,5 @@ class ContinuousModel:
         new_yout = np.zeros_like(yout)
         new_yout[(time < self.delay).sum():] = yout[:(time >= self.delay).sum()]
         yout = new_yout
-        
+
         return time, yout
