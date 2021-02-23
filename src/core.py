@@ -32,3 +32,12 @@ class ContinuousModel:
         yout = new_yout
 
         return time, yout
+
+    def get_transfer_function(self):
+        return signal.TransferFunction(self.system)
+
+    def __str__(self):
+        return f'{self.system}\n with delay {self.delay}'
+
+    def __repl__(self):
+        return f'{self.system}\n with delay {self.delay}'
