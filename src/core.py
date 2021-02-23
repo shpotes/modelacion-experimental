@@ -5,7 +5,14 @@ from scipy import signal, stats
 
 EPS = 1e-4
 
-class ContinuousModel:
+class Model:
+    def __str__(self):
+        return f'{self.system}\n with delay {self.delay}'
+
+    def __repl__(self):
+        return f'{self.system}\n with delay {self.delay}'
+
+class ContinuousModel(Model):
     def __init__(self, *args, delay=0):
         self.system = signal.lti(*args)
         self.delay = delay
@@ -36,8 +43,26 @@ class ContinuousModel:
     def get_transfer_function(self):
         return signal.TransferFunction(self.system)
 
-    def __str__(self):
-        return f'{self.system}\n with delay {self.delay}'
 
-    def __repl__(self):
-        return f'{self.system}\n with delay {self.delay}'
+class DiscreteModel(Model):
+    def __init__(self, *args, dt=1):
+        self.system = signal.dlti(*args, dt=dt)
+
+    def simulate(
+            self,
+            time: np.array = None,
+            input_signal: np.array = None,
+    ):
+        if time is None:
+            time = np.arange(0, 10, self.system.dt)
+
+        if input_signal is None:
+            input_signal = np.ones_like(time)
+
+        time, yout = signal.dlsim(
+            self.system,
+            input_signal,
+            time,
+        )
+
+        return time, yout.reshape(-1)
