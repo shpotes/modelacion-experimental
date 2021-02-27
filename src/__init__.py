@@ -1,1 +1,1 @@
-from .core import ContinuousModel
+from .core import ContinuousModel, DiscreteModel
