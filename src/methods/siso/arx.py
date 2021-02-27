@@ -34,25 +34,31 @@ class ARX:
 
         return transfer_function
 
-    def get_diff_equation(self):
-        y = sy.symbols('y')
-        u = sy.symbols('u')
+    def get_diff_equation(self, y_sym = None, u_sym = None):
+        if y_sym is None:
+            y_sym = sy.Function('y')
+        if u_sym is None:
+            u_sym = sy.Function('u')
+
         e_t = sy.symbols('e(t)')
 
-        ya_seed = diff_maker(y, self._na, self._nk)
-        ub_seed = diff_maker(u, self._nb, self._nk)
+        ya_seed = diff_maker(y_sym, self._na)
+        ub_seed = diff_maker(u_sym, self._nb, self._nk)
 
         a = sum(y * a for y, a in zip(ya_seed, self.A_seed))
         b = sum(y * b for y, b in zip(ub_seed, self.B_seed)) + e_t
 
         return a, b
 
-    def get_regresion_form(self):
-        y = sy.symbols('y')
-        u = sy.symbols('u')
+    def get_regresion_form(self, y_sym = None, u_sym = None):
+        if y_sym is None:
+            y_sym = sy.Function('y')
+        if u_sym is None:
+            u_sym = sy.Function('u')
 
-        ya_seed = diff_maker(y, self._na, self._nk)
-        ub_seed = diff_maker(u, self._nb, self._nk)
+        ya_seed = diff_maker(y_sym, self._na)
+        ya_seed = [-y for y in ya_seed]
+        ub_seed = diff_maker(u_sym, self._nb, self._nk)
 
         phi = sy.Matrix([*ya_seed, *ub_seed])
         theta = sy.Matrix([*self.A_seed[1:], *self.B_seed])

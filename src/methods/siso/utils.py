@@ -1,6 +1,7 @@
 from typing import List
 from functools import partial
 import sympy as sy
+from sympy.abc import t
 
 def function_maker(symbol: str, n: int, nk: int = 1):
     sym_string = ' '.join([
@@ -18,16 +19,12 @@ A_maker = partial(function_maker, 'a', nk=0)
 C_maker = partial(function_maker, 'c', nk=0)
 D_maker = partial(function_maker, 'd', nk=0)
 
-def diff_maker(y_sym: sy.Symbol, n: int, nk: int = 0) -> List[sy.Symbol]:
-    sym_string = ' '.join([
-        f'{y_sym}(t-{i})' if i != 0 else f'{y_sym(t)}' for i in range(nk, n + nk)
-    ])
-    symbols = sy.symbols(sym_string)
+def diff_maker(sym_func: sy.Function, n: int, nk: int = 1) -> List[sy.Symbol]:
+    symbols = [
+        sym_func(t - i) for i in range(nk, n + nk)
+    ]
 
-    if isinstance(symbols, sy.Symbol):
-        symbols = [symbols]
-
-    return list(symbols)
+    return symbols
 
 
 def make_poly(q_sym, seed: List[sy.Symbol], nk: int = 0) -> sy.Expr:
