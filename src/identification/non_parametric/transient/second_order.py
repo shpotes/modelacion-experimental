@@ -6,7 +6,7 @@ import numpy as np
 import sympy as sy
 
 from src import ContinuousModel
-from src.identification.transient import identify_first_order
+from src.identification.non_parametric.transient import identify_first_order
 
 def print_eq(
         k: float, w0: float, z: float
